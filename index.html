@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>අපේ සවිය සුබසාධක සමිතිය</title>
+  <meta name="description" content="අපේ සවිය සුබසාධක සමිතිය - ප්‍රදේශවාසීන්ගේ සාමූහික සහය">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="#" class="nav-brand">
+        <img src="logo.png" alt="අපේ සවිය Logo" class="nav-logo">
+      </a>
+      <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="#home" class="nav-link">Home</a></li>
+        <li><a href="#about" class="nav-link">About</a></li>
+        <li><a href="#members" class="nav-link">Members</a></li>
+        <li><a href="#gallery" class="nav-link">Gallery</a></li>
+        <li><a href="#contact" class="nav-link">Contact</a></li>
+        <li><a href="admin/login.php" class="nav-link nav-admin-btn">Admin Login</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- HERO SLIDER -->
+  <section id="home" class="hero">
+    <div class="slider">
+      <div class="slide active">
+        <img src="opt/banner/photo1.jpg" alt="Slide 1">
+        <div class="slide-overlay">
+          <h1 class="slide-title">ආයුබෝවන්</h1>
+          <p class="slide-sub">අපේ සවිය සුබසාධක සමිතිය</p>
+        </div>
+      </div>
+      <div class="slide">
+        <img src="opt/banner/photo2.jpg" alt="Slide 2">
+        <div class="slide-overlay">
+          <h1 class="slide-title">අපේ සවිය</h1>
+          <p class="slide-sub">සාමූහිකත්වය – ශක්තිය – සේවාව</p>
+        </div>
+      </div>
+      <div class="slide">
+        <img src="opt/banner/photo3.jpg" alt="Slide 3">
+        <div class="slide-overlay">
+          <h1 class="slide-title">Digital Line of Welfare</h1>
+          <p class="slide-sub">Connecting communities, caring for all</p>
+        </div>
+      </div>
+    </div>
+    <button class="slider-btn prev" id="sliderPrev" aria-label="Previous">&#8592;</button>
+    <button class="slider-btn next" id="sliderNext" aria-label="Next">&#8594;</button>
+    <div class="slider-dots" id="sliderDots"></div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about" class="section section-light">
+    <div class="container">
+      <span class="section-tag">About Us</span>
+      <h2 class="section-title">අපගේ අරමුණ</h2>
+      <p class="section-desc">
+        ප්‍රදේශවාසී වලංගූ සමාජිකත්වයක් හිමි අයගේ අවමංගල අවස්ථාවන්හිදී සහා සරණක් අවැසිවිටකදී ඔවුන්ට සාමූහිකව උපකාර කිරීම.
+      </p>
+      <div class="cards-row">
+        <div class="card">
+          <div class="card-icon">🤝</div>
+          <h3>සාමූහිකත්වය</h3>
+          <p>එකිනෙකා සහයෝගිව, ශක්තිමත් ප්‍රජාවක් ගොඩනැගීම.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">💙</div>
+          <h3>සහාය</h3>
+          <p>දුෂ්කර මොමේන්තුවල සමාජිකයන්ට ශක්තිය දීම.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">🌿</div>
+          <h3>සේවාව</h3>
+          <p>ප්‍රදේශයේ සෑම ගෙදරකටම ළඟා වන සේවාවක්.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MEMBER LOOKUP -->
+  <section id="members" class="section section-grey">
+    <div class="container">
+      <span class="section-tag">Members</span>
+      <h2 class="section-title">Check Member Details</h2>
+      <div class="search-bar">
+        <input type="text" id="search-input" placeholder="Search by name…" autocomplete="off">
+        <button id="search-btn" onclick="searchMembers()">Search</button>
+      </div>
+      <div class="table-wrap">
+        <table id="member-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Name</th>
+              <th>Index No.</th>
+              <th>NIC / ID</th>
+            </tr>
+          </thead>
+          <tbody id="member-tbody">
+            <tr><td colspan="4" class="table-empty">Loading…</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div id="pagination" class="pagination"></div>
+    </div>
+  </section>
+
+  <!-- GALLERY -->
+  <section id="gallery" class="section section-light">
+    <div class="container">
+      <span class="section-tag">Gallery</span>
+      <h2 class="section-title">Our Moments</h2>
+      <div class="gallery-grid">
+        <div class="gallery-item"><img src="opt/gallery/gallery1.jpg" alt="Gallery 1" loading="lazy"></div>
+        <div class="gallery-item"><img src="opt/gallery/gallery2.jpg" alt="Gallery 2" loading="lazy"></div>
+        <div class="gallery-item"><img src="opt/gallery/gallery3.jpg" alt="Gallery 3" loading="lazy"></div>
+        <div class="gallery-item"><img src="opt/gallery/gallery4.jpg" alt="Gallery 4" loading="lazy"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" class="section section-grey">
+    <div class="container">
+      <span class="section-tag">Contact</span>
+      <h2 class="section-title">Get In Touch</h2>
+      <div class="contact-grid">
+        <div class="contact-card">
+          <span class="contact-icon">✉️</span>
+          <p>email@example.com</p>
+        </div>
+        <div class="contact-card">
+          <span class="contact-icon">📞</span>
+          <p>+94 XX XXX XXXX</p>
+        </div>
+        <div class="contact-card">
+          <span class="contact-icon">📍</span>
+          <p>Sri Lanka</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <p>&copy; 2025 අපේ සවිය සුබසාධක සමිතිය. All rights reserved.</p>
+      <div class="social-links">
+        <a href="#" aria-label="Facebook">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg>
+        </a>
+        <a href="#" aria-label="Instagram">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Member Profile – අපේ සවිය</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .profile-page { min-height: 100vh; background: var(--grey-bg); padding-top: 100px; padding-bottom: 60px; }
+    .profile-card { max-width: 800px; margin: 0 auto; background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow-md); overflow: hidden; }
+    .profile-header { background: var(--primary); color: #fff; padding: 32px; text-align: center; }
+    .profile-header h1 { font-size: 1.8rem; margin-bottom: 8px; }
+    .profile-header p { opacity: 0.9; font-size: 1rem; }
+    
+    .auth-section { padding: 40px; text-align: center; }
+    .auth-section p { margin-bottom: 24px; color: var(--text-muted); }
+    .auth-form { max-width: 320px; margin: 0 auto; }
+    .auth-form input { width: 100%; padding: 12px 16px; border: 1.5px solid var(--border); border-radius: 8px; margin-bottom: 16px; font-size: 1rem; text-align: center; }
+    .auth-form input:focus { border-color: var(--primary); outline: none; }
+    .auth-error { color: #dc2626; background: #fef2f2; padding: 12px; border-radius: 8px; border: 1px solid #fecaca; margin-bottom: 20px; display: none; }
+
+    .data-section { padding: 32px; display: none; }
+    .status-card { display: flex; align-items: center; justify-content: space-between; padding: 24px; background: var(--grey-bg); border-radius: 8px; margin-bottom: 32px; border-left: 4px solid var(--primary); }
+    .status-card.paid { border-left-color: #10b981; }
+    .status-card.unpaid { border-left-color: #ef4444; }
+    .status-title { font-size: 0.9rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; margin-bottom: 4px; }
+    .status-val { font-size: 1.5rem; font-weight: 700; }
+    .status-badge { padding: 6px 16px; border-radius: 20px; font-weight: 600; font-size: 0.9rem; }
+    .status-badge.paid { background: #d1fae5; color: #047857; }
+    .status-badge.unpaid { background: #fee2e2; color: #b91c1c; }
+
+    .payments-table { width: 100%; border-collapse: collapse; margin-top: 16px; font-size: 0.95rem; }
+    .payments-table th { background: var(--grey-bg); padding: 12px; text-align: left; color: var(--text-muted); font-weight: 600; }
+    .payments-table td { padding: 16px 12px; border-bottom: 1px solid var(--border); }
+    .payments-table tr:last-child td { border-bottom: none; }
+    
+    .back-btn { display: inline-block; margin-top: 24px; color: var(--text-muted); font-weight: 500; }
+    .back-btn:hover { color: var(--primary); }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-brand">
+        <img src="logo.png" alt="අපේ සවිය Logo" class="nav-logo">
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html" class="nav-link">← Back to Home</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="profile-page">
+    <div class="container">
+      <div class="profile-card">
+        
+        <div class="profile-header">
+          <h1 id="memberName">Loading...</h1>
+          <p>Index: <span id="memberIndex">—</span></p>
+        </div>
+
+        <!-- Auth Section -->
+        <div id="authSection" class="auth-section">
+          <h2>Identity Verification</h2>
+          <p>Please enter your exact NIC / ID Number to view your payment history.</p>
+          <div id="authError" class="auth-error">Invalid ID Number. Please try again.</div>
+          <form id="authForm" class="auth-form" onsubmit="event.preventDefault(); verifyId();">
+            <input type="text" id="idInput" placeholder="NIC / ID Number" required autofocus>
+            <button type="submit" class="btn btn-primary btn-block">Verify Identity</button>
+          </form>
+          <a href="index.html" class="back-btn">← Cancel</a>
+        </div>
+
+        <!-- Data Section (Hidden until verified) -->
+        <div id="dataSection" class="data-section">
+          
+          <div class="status-card" id="statusCard">
+            <div>
+              <div class="status-title">Current Month Status (<span id="currMonthName">Month</span>)</div>
+              <div class="status-val" id="totalPaid">LKR 0.00 Total Paid</div>
+            </div>
+            <div class="status-badge" id="statusBadge">Checking...</div>
+          </div>
+
+          <h3 style="margin-bottom: 16px;">Payment History</h3>
+          <div class="table-wrap">
+            <table class="payments-table">
+              <thead>
+                <tr>
+                  <th>Date Paid</th>
+                  <th>For Month</th>
+                  <th>Amount</th>
+                </tr>
+              </thead>
+              <tbody id="paymentsBody">
+                <tr><td colspan="3" class="table-empty">No payments recorded.</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+<script>
+const urlParams = new URLSearchParams(window.location.search);
+const memberId = urlParams.get('id');
+
+if (!memberId) {
+    window.location.href = 'index.html';
+}
+
+const months = ['', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+const d = new Date();
+document.getElementById('currMonthName').textContent = months[d.getMonth() + 1] + ' ' + d.getFullYear();
+
+// Fetch basic name info first
+async function loadBasicInfo() {
+    try {
+        const res = await fetch(`api/get_profile.php?id=${memberId}&basic=1`);
+        const data = await res.json();
+        if (data.error) throw new Error(data.error);
+        
+        document.getElementById('memberName').textContent = data.member.name;
+        document.getElementById('memberIndex').textContent = data.member.indexnum || '—';
+    } catch (e) {
+        document.getElementById('memberName').textContent = 'Member Not Found';
+        document.getElementById('authForm').style.display = 'none';
+        document.getElementById('authError').textContent = e.message;
+        document.getElementById('authError').style.display = 'block';
+    }
+}
+
+// Verify ID and load payments
+async function verifyId() {
+    const idnum = document.getElementById('idInput').value.trim();
+    if (!idnum) return;
+
+    const btn = document.querySelector('#authForm button');
+    btn.textContent = 'Verifying...';
+    btn.disabled = true;
+    document.getElementById('authError').style.display = 'none';
+
+    try {
+        const res = await fetch('api/get_profile.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: `id=${memberId}&idnum=${encodeURIComponent(idnum)}`
+        });
+        const data = await res.json();
+        
+        if (data.error) {
+            throw new Error(data.error);
+        }
+
+        // Success! Hide auth, show data
+        document.getElementById('authSection').style.display = 'none';
+        document.getElementById('dataSection').style.display = 'block';
+        
+        renderProfile(data);
+
+    } catch (e) {
+        document.getElementById('authError').textContent = e.message;
+        document.getElementById('authError').style.display = 'block';
+        btn.textContent = 'Verify Identity';
+        btn.disabled = false;
+    }
+}
+
+function renderProfile(data) {
+    // Determine current month status
+    const isPaid = data.current_month_paid;
+    const badge = document.getElementById('statusBadge');
+    const card = document.getElementById('statusCard');
+    
+    if (isPaid) {
+        badge.textContent = 'PAID';
+        badge.className = 'status-badge paid';
+        card.className = 'status-card paid';
+    } else {
+        badge.textContent = 'PENDING';
+        badge.className = 'status-badge unpaid';
+        card.className = 'status-card unpaid';
+    }
+
+    // Total Paid
+    document.getElementById('totalPaid').textContent = `LKR ${parseFloat(data.total_paid).toLocaleString('en-US', {minimumFractionDigits: 2})} Total Paid`;
+
+    // Payments Table
+    const tbody = document.getElementById('paymentsBody');
+    if (data.payments.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="3" class="table-empty">No payments recorded yet.</td></tr>';
+        return;
+    }
+
+    tbody.innerHTML = data.payments.map(p => {
+        const dateStr = new Date(p.payment_date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+        return `
+            <tr>
+                <td>${dateStr}</td>
+                <td><strong>${months[p.month]} ${p.year}</strong></td>
+                <td>LKR ${parseFloat(p.amount).toLocaleString('en-US', {minimumFractionDigits: 2})}</td>
+            </tr>
+        `;
+    }).join('');
+}
+
+loadBasicInfo();
+</script>
+</body>
+</html>
